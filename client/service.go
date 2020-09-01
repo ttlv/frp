@@ -240,16 +240,26 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		}
 		conn = stream
 	}
-
+	// 获取mac地址
+	var macAddress string
+	interfaces, _ := net.Interfaces()
+	for _, inter := range interfaces {
+		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
+			continue
+		}
+		macAddress = fmt.Sprintf("%v", inter.HardwareAddr)
+		break
+	}
 	loginMsg := &msg.Login{
-		Arch:      runtime.GOARCH,
-		Os:        runtime.GOOS,
-		PoolCount: svr.cfg.PoolCount,
-		User:      svr.cfg.User,
-		Version:   version.Full(),
-		Timestamp: time.Now().Unix(),
-		RunId:     svr.runId,
-		Metas:     svr.cfg.Metas,
+		Arch:       runtime.GOARCH,
+		Os:         runtime.GOOS,
+		PoolCount:  svr.cfg.PoolCount,
+		User:       svr.cfg.User,
+		Version:    version.Full(),
+		Timestamp:  time.Now().Unix(),
+		RunId:      svr.runId,
+		Metas:      svr.cfg.Metas,
+		MacAddress: macAddress,
 	}
 
 	// Add auth

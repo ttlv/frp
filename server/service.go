@@ -429,8 +429,8 @@ func (svr *Service) RegisterControl(ctlConn net.Conn, loginMsg *msg.Login) (err 
 	xl := xlog.FromContextSafe(ctx)
 	xl.AppendPrefix(loginMsg.RunId)
 	ctx = xlog.NewContext(ctx, xl)
-	xl.Info("client login info: ip [%s] version [%s] hostname [%s] os [%s] arch [%s]",
-		ctlConn.RemoteAddr().String(), loginMsg.Version, loginMsg.Hostname, loginMsg.Os, loginMsg.Arch)
+	xl.Info("client login info: ip [%s] version [%s] mac_address [%s] os [%s] arch [%s]",
+		ctlConn.RemoteAddr().String(), loginMsg.Version, loginMsg.MacAddress, loginMsg.Os, loginMsg.Arch)
 
 	// Check client version.
 	if ok, msg := version.Compat(loginMsg.Version); !ok {
