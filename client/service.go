@@ -16,11 +16,14 @@ package client
 
 import (
 	"context"
+	"crypto/sha1"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net"
 	"runtime"
+	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -35,6 +38,7 @@ import (
 	"github.com/fatedier/frp/utils/xlog"
 
 	fmux "github.com/hashicorp/yamux"
+	"sort"
 )
 
 // Service is a client service.
@@ -240,7 +244,19 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		}
 		conn = stream
 	}
-
+	// 获取mac地址
+	var temp []int
+	interfaces, _ := net.Interfaces()
+	for _, inter := range interfaces {
+		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
+			continue
+		}
+		sHex := strings.Replace(fmt.Sprintf("%v", inter.HardwareAddr), ":", "", -1)
+		n, _ := strconv.ParseInt(sHex, 16, 64)
+		temp = append(temp, int(n))
+	}
+	sort.Ints(temp)
+	sha1.New().Write([]byte(fmt.Sprintf("%v", temp[0])))
 	loginMsg := &msg.Login{
 		Arch:      runtime.GOARCH,
 		Os:        runtime.GOOS,
@@ -250,6 +266,7 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		Timestamp: time.Now().Unix(),
 		RunId:     svr.runId,
 		Metas:     svr.cfg.Metas,
+		UniqueID:  fmt.Sprintf("%v", sha1.New().Sum([]byte(""))),
 	}
 
 	// Add auth
