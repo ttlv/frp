@@ -158,6 +158,7 @@ type ProxyStatsInfo struct {
 	LastStartTime   string      `json:"last_start_time"`
 	LastCloseTime   string      `json:"last_close_time"`
 	Status          string      `json:"status"`
+	UniqueID        string      `json:"unique_id"`
 }
 
 type GetProxyInfoResp struct {
@@ -212,6 +213,7 @@ func (svr *Service) getProxyStatsByType(proxyType string) (proxyInfos []*ProxySt
 		proxyInfo.CurConns = ps.CurConns
 		proxyInfo.LastStartTime = ps.LastStartTime
 		proxyInfo.LastCloseTime = ps.LastCloseTime
+		proxyInfo.UniqueID = ps.UniqueID
 		proxyInfos = append(proxyInfos, proxyInfo)
 	}
 	return

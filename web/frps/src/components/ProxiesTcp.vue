@@ -67,6 +67,11 @@
       sortable>
     </el-table-column>
     <el-table-column
+      label="Unique ID"
+      prop="unique_id"
+      sortable>
+    </el-table-column>
+    <el-table-column
       label="status"
       prop="status"
       sortable>

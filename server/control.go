@@ -443,7 +443,7 @@ func (ctl *Control) manager() {
 				} else {
 					resp.RemoteAddr = remoteAddr
 					xl.Info("new proxy [%s] success", m.ProxyName)
-					metrics.Server.NewProxy(m.ProxyName, m.ProxyType)
+					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID)
 				}
 				ctl.sendCh <- resp
 			case *msg.CloseProxy:
