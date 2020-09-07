@@ -266,7 +266,7 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		Timestamp: time.Now().Unix(),
 		RunId:     svr.runId,
 		Metas:     svr.cfg.Metas,
-		UniqueID:  fmt.Sprintf("%v", fmt.Sprintf("%x", sha1.New().Sum([]byte("")))),
+		UniqueID:  fmt.Sprintf("%v", fmt.Sprintf("%x", sha1.New().Sum([]byte("")))[20:]),
 	}
 
 	// Add auth
