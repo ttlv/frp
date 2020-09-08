@@ -37,29 +37,30 @@ var (
 	cfgFile     string
 	showVersion bool
 
-	bindAddr          string
-	bindPort          int
-	bindUdpPort       int
-	kcpBindPort       int
-	proxyBindAddr     string
-	vhostHttpPort     int
-	vhostHttpsPort    int
-	vhostHttpTimeout  int64
-	dashboardAddr     string
-	dashboardPort     int
-	dashboardUser     string
-	dashboardPwd      string
-	assetsDir         string
-	logFile           string
-	logLevel          string
-	logMaxDays        int64
-	disableLogColor   bool
-	token             string
-	subDomainHost     string
-	tcpMux            bool
-	allowPorts        string
-	maxPoolCount      int64
-	maxPortsPerClient int64
+	bindAddr                string
+	bindPort                int
+	bindUdpPort             int
+	kcpBindPort             int
+	proxyBindAddr           string
+	vhostHttpPort           int
+	vhostHttpsPort          int
+	vhostHttpTimeout        int64
+	dashboardAddr           string
+	dashboardPort           int
+	dashboardUser           string
+	dashboardPwd            string
+	assetsDir               string
+	logFile                 string
+	logLevel                string
+	logMaxDays              int64
+	disableLogColor         bool
+	token                   string
+	subDomainHost           string
+	tcpMux                  bool
+	allowPorts              string
+	maxPoolCount            int64
+	maxPortsPerClient       int64
+	frpAdapterServerAddress string
 )
 
 func init() {
@@ -173,6 +174,7 @@ func parseServerCommonCfgFromCmd() (cfg config.ServerCommonConf, err error) {
 	cfg.LogLevel = logLevel
 	cfg.LogMaxDays = logMaxDays
 	cfg.SubDomainHost = subDomainHost
+	cfg.FrpAdapterServerAddress = frpAdapterServerAddress
 
 	// Only token authentication is supported in cmd mode
 	cfg.AuthServerConfig = auth.GetDefaultAuthServerConf()

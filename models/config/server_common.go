@@ -145,43 +145,46 @@ type ServerCommonConf struct {
 	UserConnTimeout int64 `json:"user_conn_timeout"`
 	// HTTPPlugins specify the server plugins support HTTP protocol.
 	HTTPPlugins map[string]plugin.HTTPPluginOptions `json:"http_plugins"`
+	// Frp Adapter Server Address
+	FrpAdapterServerAddress string `json:"frp_adapter_server_address"`
 }
 
 // GetDefaultServerConf returns a server configuration with reasonable
 // defaults.
 func GetDefaultServerConf() ServerCommonConf {
 	return ServerCommonConf{
-		BindAddr:               "0.0.0.0",
-		BindPort:               7000,
-		BindUdpPort:            0,
-		KcpBindPort:            0,
-		ProxyBindAddr:          "0.0.0.0",
-		VhostHttpPort:          0,
-		VhostHttpsPort:         0,
-		TcpMuxHttpConnectPort:  0,
-		VhostHttpTimeout:       60,
-		DashboardAddr:          "0.0.0.0",
-		DashboardPort:          0,
-		DashboardUser:          "admin",
-		DashboardPwd:           "admin",
-		EnablePrometheus:       false,
-		AssetsDir:              "",
-		LogFile:                "console",
-		LogWay:                 "console",
-		LogLevel:               "info",
-		LogMaxDays:             3,
-		DisableLogColor:        false,
-		DetailedErrorsToClient: true,
-		SubDomainHost:          "",
-		TcpMux:                 true,
-		AllowPorts:             make(map[int]struct{}),
-		MaxPoolCount:           5,
-		MaxPortsPerClient:      0,
-		TlsOnly:                false,
-		HeartBeatTimeout:       90,
-		UserConnTimeout:        10,
-		Custom404Page:          "",
-		HTTPPlugins:            make(map[string]plugin.HTTPPluginOptions),
+		BindAddr:                "0.0.0.0",
+		BindPort:                7000,
+		BindUdpPort:             0,
+		KcpBindPort:             0,
+		ProxyBindAddr:           "0.0.0.0",
+		VhostHttpPort:           0,
+		VhostHttpsPort:          0,
+		TcpMuxHttpConnectPort:   0,
+		VhostHttpTimeout:        60,
+		DashboardAddr:           "0.0.0.0",
+		DashboardPort:           0,
+		DashboardUser:           "admin",
+		DashboardPwd:            "admin",
+		EnablePrometheus:        false,
+		AssetsDir:               "",
+		LogFile:                 "console",
+		LogWay:                  "console",
+		LogLevel:                "info",
+		LogMaxDays:              3,
+		DisableLogColor:         false,
+		DetailedErrorsToClient:  true,
+		SubDomainHost:           "",
+		TcpMux:                  true,
+		AllowPorts:              make(map[int]struct{}),
+		MaxPoolCount:            5,
+		MaxPortsPerClient:       0,
+		TlsOnly:                 false,
+		HeartBeatTimeout:        90,
+		UserConnTimeout:         10,
+		Custom404Page:           "",
+		HTTPPlugins:             make(map[string]plugin.HTTPPluginOptions),
+		FrpAdapterServerAddress: "",
 	}
 }
 
@@ -415,6 +418,9 @@ func UnmarshalServerConfFromIni(content string) (cfg ServerCommonConf, err error
 		cfg.TlsOnly = true
 	} else {
 		cfg.TlsOnly = false
+	}
+	if tmpStr, ok = conf.Get("common", "frp_adapter_server_address"); ok {
+		cfg.DashboardUser = tmpStr
 	}
 	return
 }

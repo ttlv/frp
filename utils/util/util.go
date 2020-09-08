@@ -19,6 +19,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -108,4 +110,14 @@ func GenerateResponseErrorString(summary string, err error, detailed bool) strin
 	} else {
 		return summary
 	}
+}
+
+func GetExternalIp() string {
+	resp, err := http.Get("https://myexternalip.com/raw")
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	content, _ := ioutil.ReadAll(resp.Body)
+	return string(content)
 }
