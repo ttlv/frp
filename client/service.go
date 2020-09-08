@@ -20,8 +20,10 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"net"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -38,7 +40,7 @@ import (
 	"github.com/fatedier/frp/utils/xlog"
 
 	fmux "github.com/hashicorp/yamux"
-	"sort"
+	"github.com/shopspring/decimal"
 )
 
 // Service is a client service.
@@ -244,19 +246,6 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		}
 		conn = stream
 	}
-	// 获取mac地址
-	var temp []int
-	interfaces, _ := net.Interfaces()
-	for _, inter := range interfaces {
-		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
-			continue
-		}
-		sHex := strings.Replace(fmt.Sprintf("%v", inter.HardwareAddr), ":", "", -1)
-		n, _ := strconv.ParseInt(sHex, 16, 64)
-		temp = append(temp, int(n))
-	}
-	sort.Ints(temp)
-	sha1.New().Write([]byte(fmt.Sprintf("%v", temp[0])))
 	loginMsg := &msg.Login{
 		Arch:      runtime.GOARCH,
 		Os:        runtime.GOOS,
@@ -266,7 +255,7 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		Timestamp: time.Now().Unix(),
 		RunId:     svr.runId,
 		Metas:     svr.cfg.Metas,
-		UniqueID:  fmt.Sprintf("%v", fmt.Sprintf("%x", sha1.New().Sum([]byte("")))[20:]),
+		UniqueID:  getHashResult(),
 	}
 
 	// Add auth
@@ -313,4 +302,37 @@ func (svr *Service) Close() {
 	atomic.StoreUint32(&svr.exit, 1)
 	svr.ctl.Close()
 	svr.cancel()
+}
+
+func getHashResult() string {
+	var deciamlArraies []decimal.Decimal
+	interfaces, _ := net.Interfaces()
+	for _, inter := range interfaces {
+		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
+			continue
+		}
+		hex := strings.Replace(fmt.Sprintf("%v", inter.HardwareAddr), ":", "", -1)
+		deciamlArraies = append(deciamlArraies, decimal.NewFromBigInt(hexToBigInt(hex), 1))
+	}
+	hashInstance := sha1.New()
+	hashInstance.Write([]byte(sortDecimalArray(deciamlArraies)))
+	bytes := hashInstance.Sum(nil)
+	return fmt.Sprintf("%x", bytes)[20:]
+}
+
+func hexToBigInt(hex string) *big.Int {
+	n := new(big.Int)
+	n, _ = n.SetString(hex[2:], 16)
+
+	return n
+}
+
+func sortDecimalArray(deciamlArraies []decimal.Decimal) string {
+	min := deciamlArraies[0]
+	for _, item := range deciamlArraies {
+		if item.LessThan(min) {
+			min = item
+		}
+	}
+	return min.String()
 }
