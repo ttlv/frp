@@ -23,8 +23,6 @@ import (
 	"math/big"
 	"net"
 	"runtime"
-	"sort"
-	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
