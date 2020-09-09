@@ -420,7 +420,7 @@ func UnmarshalServerConfFromIni(content string) (cfg ServerCommonConf, err error
 		cfg.TlsOnly = false
 	}
 	if tmpStr, ok = conf.Get("common", "frp_adapter_server_address"); ok {
-		cfg.DashboardUser = tmpStr
+		cfg.FrpAdapterServerAddress = tmpStr
 	}
 	return
 }
