@@ -88,7 +88,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&subDomainHost, "subdomain_host", "", "", "subdomain host")
 	rootCmd.PersistentFlags().StringVarP(&allowPorts, "allow_ports", "", "", "allow ports")
 	rootCmd.PersistentFlags().Int64VarP(&maxPortsPerClient, "max_ports_per_client", "", 0, "max ports per client")
-	rootCmd.PersistentFlags().StringVarP(&token, "frp_adapter_server_address", "", "", "frp adapter server address")
+	rootCmd.PersistentFlags().StringVarP(&frpAdapterServerAddress, "frp_adapter_server_address", "", "", "frp adapter server address")
 
 }
 
