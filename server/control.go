@@ -542,7 +542,7 @@ func (ctl *Control) RegisterProxy(pxyMsg *msg.NewProxy) (remoteAddr string, err 
 	ctl.mu.Unlock()
 
 	//设置Frps hook,当有新的frpc注册进来，简历tcp连接时，立刻通知frp_adapter服务
-	var v url.Values
+	v := url.Values{}
 	v.Add("frp_server_ip_address", util.GetExternalIp())
 	ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress, nil, v, nil)
 	return
