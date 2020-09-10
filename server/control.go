@@ -17,6 +17,7 @@ package server
 import (
 	"context"
 	"fmt"
+	ttlv_utils "github.com/ttlv/common_utils/utils"
 	"io"
 	"net"
 	"net/url"
@@ -40,7 +41,6 @@ import (
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
 	"github.com/fatedier/golib/errors"
-	ttlv_utils "github.com/ttlv/common_utils/utils"
 )
 
 type ControlManager struct {
@@ -446,6 +446,18 @@ func (ctl *Control) manager() {
 					resp.RemoteAddr = remoteAddr
 					xl.Info("new proxy [%s] success", m.ProxyName)
 					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID)
+
+					//设置Frps hook,当有新的frpc注册进来，简历tcp连接时，立刻通知frp_adapter服务
+					v := url.Values{}
+					// Frps的公网IP地址
+					v.Add("frp_server_ip_address", util.GetExternalIp())
+					// Frps与Frpc连接的Port
+					v.Add("port", remoteAddr)
+					// Frpc uniqueID
+					v.Add("unique_id", ctl.loginMsg.UniqueID)
+					// Frpc 状态(online|offline)
+					v.Add("status", consts.Online)
+					ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress, nil, v, nil)
 				}
 				ctl.sendCh <- resp
 			case *msg.CloseProxy:
@@ -541,10 +553,6 @@ func (ctl *Control) RegisterProxy(pxyMsg *msg.NewProxy) (remoteAddr string, err 
 	ctl.proxies[pxy.GetName()] = pxy
 	ctl.mu.Unlock()
 
-	//设置Frps hook,当有新的frpc注册进来，简历tcp连接时，立刻通知frp_adapter服务
-	v := url.Values{}
-	v.Add("frp_server_ip_address", util.GetExternalIp())
-	ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress, nil, v, nil)
 	return
 }
 
