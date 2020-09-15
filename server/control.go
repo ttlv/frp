@@ -389,9 +389,12 @@ func (ctl *Control) stoper() {
 	// frpc断开与frps的连接时需要设置hook,通知frp adapter服务将节点设置为离线状态
 	v := url.Values{}
 	v.Add("status", consts.Offline)
-	if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, v, nil); err != nil {
+	v.Add("node_maintenance_name", fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID))
+	result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, v, nil)
+	if err != nil {
 		xl.Info("update frpc info into k8s failed,err is %v", err)
 	}
+	xl.Info(result)
 }
 
 // block until Control closed
@@ -465,9 +468,11 @@ func (ctl *Control) manager() {
 					v.Add("unique_id", ctl.loginMsg.UniqueID)
 					// Frpc 状态(online|offline)
 					v.Add("status", consts.Online)
-					if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_create", nil, v, nil); err != nil {
+					result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_create", nil, v, nil)
+					if err != nil {
 						xl.Info("register new frpc info into k8s failed,err is %v", err)
 					}
+					xl.Info(result)
 				}
 				ctl.sendCh <- resp
 			case *msg.CloseProxy:
