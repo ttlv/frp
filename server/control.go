@@ -42,7 +42,6 @@ import (
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
 	"github.com/fatedier/golib/errors"
-	"github.com/tidwall/gjson"
 )
 
 type ControlManager struct {
