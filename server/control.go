@@ -389,7 +389,7 @@ func (ctl *Control) stoper() {
 	// frpc断开与frps的连接时需要设置hook,通知frp adapter服务将节点设置为离线状态
 	v := url.Values{}
 	v.Add("status", consts.Offline)
-	if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"frp_update", nil, v, nil); err != nil {
+	if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, v, nil); err != nil {
 		xl.Info("update frpc info into k8s failed,err is %v", err)
 	}
 }
