@@ -385,6 +385,13 @@ func (ctl *Control) stoper() {
 	ctl.allShutdown.Done()
 	xl.Info("client exit success")
 	metrics.Server.CloseClient()
+
+	// frpc断开与frps的连接时需要设置hook,通知frp adapter服务将节点设置为离线状态
+	v := url.Values{}
+	v.Add("status", consts.Offline)
+	if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"frp_update", nil, v, nil); err != nil {
+		xl.Info("update frpc info into k8s failed,err is %v", err)
+	}
 }
 
 // block until Control closed
@@ -466,12 +473,6 @@ func (ctl *Control) manager() {
 			case *msg.CloseProxy:
 				ctl.CloseProxy(m)
 				xl.Info("close proxy [%s] success", m.ProxyName)
-				// frpc断开与frps的连接时需要设置hook,通知frp adapter服务将节点设置为离线状态
-				v := url.Values{}
-				v.Add("status", consts.Offline)
-				if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"frp_update", nil, v, nil); err != nil {
-					xl.Info("update frpc info into k8s failed,err is %v", err)
-				}
 			case *msg.Ping:
 				content := &plugin.PingContent{
 					User: plugin.UserInfo{
