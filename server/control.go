@@ -22,6 +22,7 @@ import (
 	"net"
 	"net/url"
 	"runtime/debug"
+	"strings"
 	"sync"
 	"time"
 
@@ -41,6 +42,7 @@ import (
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
 	"github.com/fatedier/golib/errors"
+	"github.com/tidwall/gjson"
 )
 
 type ControlManager struct {
@@ -452,12 +454,14 @@ func (ctl *Control) manager() {
 					// Frps的公网IP地址
 					v.Add("frp_server_ip_address", util.GetExternalIp())
 					// Frps与Frpc连接的Port
-					v.Add("port", remoteAddr)
+					v.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 					// Frpc uniqueID
 					v.Add("unique_id", ctl.loginMsg.UniqueID)
 					// Frpc 状态(online|offline)
 					v.Add("status", consts.Online)
-					ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress, nil, v, nil)
+					if _, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress, nil, v, nil); err != nil {
+						resp.Error = fmt.Sprintf("can't connect to Frp Adapter Server,err is %v", err)
+					}
 				}
 				ctl.sendCh <- resp
 			case *msg.CloseProxy:

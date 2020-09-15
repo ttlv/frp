@@ -27,6 +27,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/templexxx/cpufeat v0.0.0-20170927014610-3794dfbfb047 // indirect
 	github.com/templexxx/xor v0.0.0-20170926022130-0af8e873c554 // indirect
+	github.com/tidwall/gjson v1.6.1 // indirect
 	github.com/tjfoc/gmsm v0.0.0-20171124023159-98aa888b79d8 // indirect
 	github.com/ttlv/common_utils v0.0.0-20200523105101-9edf9c59da11
 	github.com/vaughan0/go-ini v0.0.0-20130923145212-a98ad7ee00ec
