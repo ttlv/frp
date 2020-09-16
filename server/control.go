@@ -468,7 +468,7 @@ func (ctl *Control) manager() {
 						updateParams = url.Values{}
 						coreFrp      = entries.CoreFrp{}
 					)
-					getResult, err := ttlv_utils.Get(fmt.Sprintf("%v/frp_fetch/%v", ctl.serverCfg.FrpAdapterServerAddress, fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID)), nil)
+					getResult, err := ttlv_utils.Get(fmt.Sprintf("%v/frp_fetch/%v", ctl.serverCfg.FrpAdapterServerAddress, fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID)), nil)
 					if err != nil {
 						xl.Info("fetch info %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
 					}
