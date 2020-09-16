@@ -470,7 +470,7 @@ func (ctl *Control) manager() {
 					)
 					getResult, err := ttlv_utils.Get(fmt.Sprintf("%v/frp_fetch/%v", ctl.serverCfg.FrpAdapterServerAddress, fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID)), nil)
 					if err != nil {
-						xl.Info("fetch info %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
+						xl.Info("fetch %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
 					}
 					if gjson.Get(getResult, "error.code").String() == "400" {
 						xl.Info(gjson.Get(getResult, "message").String())
