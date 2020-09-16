@@ -16,6 +16,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	ttlv_utils "github.com/ttlv/common_utils/utils"
 	"io"
@@ -42,6 +43,8 @@ import (
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
 	"github.com/fatedier/golib/errors"
+	"github.com/tidwall/gjson"
+	"github.com/ttlv/frp_adapter/app/entries"
 )
 
 type ControlManager struct {
@@ -457,22 +460,50 @@ func (ctl *Control) manager() {
 					resp.RemoteAddr = remoteAddr
 					xl.Info("new proxy [%s] success", m.ProxyName)
 					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID)
+					// 设置Frps hook,当有新的frpc注册进来，简历tcp连接时，立刻通知frp_adapter服务
+					// 已经注册的节点因为frps服务重启，可能会出现重新分配port的情况，所以需要先去k8s中获取旧的数据进行对比
+					// 结果以frps的结果为准，如果两者不一样，则进行更新操作
+					var (
+						getParams    = url.Values{}
+						createParams = url.Values{}
+						updateParams = url.Values{}
+						coreFrp      = entries.CoreFrp{}
+					)
 
-					//设置Frps hook,当有新的frpc注册进来，简历tcp连接时，立刻通知frp_adapter服务
-					v := url.Values{}
-					// Frps的公网IP地址
-					v.Add("frp_server_ip_address", util.GetExternalIp())
-					// Frps与Frpc连接的Port
-					v.Add("port", strings.Replace(remoteAddr, ":", "", -1))
-					// Frpc uniqueID
-					v.Add("unique_id", ctl.loginMsg.UniqueID)
-					// Frpc 状态(online|offline)
-					v.Add("status", consts.Online)
-					result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_create", nil, v, nil)
+					getParams.Set("node_maintenance_name", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID))
+					getResult, err := ttlv_utils.Get(ctl.serverCfg.FrpAdapterServerAddress+"/frp_fetch", getParams)
 					if err != nil {
-						xl.Info("register new frpc info into k8s failed,err is %v", err)
+						xl.Info("fetch info %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
 					}
-					xl.Info(result)
+					if gjson.Get(getResult, "code").String() == "400" {
+						xl.Info(gjson.Get(getResult, "message").String())
+					} else if gjson.Get(getResult, "code").String() == "401" {
+						// 不存在当前的资源对象，需要创建
+						// Frps的公网IP地址q
+						createParams.Add("frp_server_ip_address", util.GetExternalIp())
+						// Frps与Frpc连接的Port
+						createParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
+						// Frpc uniqueID
+						createParams.Add("unique_id", ctl.loginMsg.UniqueID)
+						// Frpc 状态(online|offline)
+						createParams.Add("status", consts.Online)
+						result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_create", nil, createParams, nil)
+						if err != nil {
+							xl.Info("register new frpc info into k8s failed,err is %v", err)
+						}
+						xl.Info(result)
+					} else {
+						// 当前的对象已经存在，直接执行更新操作
+						json.Unmarshal([]byte(getResult), &coreFrp)
+						updateParams.Add("frp_server_ip_address", util.GetExternalIp())
+						updateParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
+						updateParams.Add("status", consts.Online)
+						result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, updateParams, nil)
+						if err != nil {
+							xl.Info("update frpc info into k8s failed,err is %v", err)
+						}
+						xl.Info(result)
+					}
 				}
 				ctl.sendCh <- resp
 			case *msg.CloseProxy:

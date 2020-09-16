@@ -23,17 +23,17 @@ require (
 	github.com/rodaine/table v1.0.0
 	github.com/shopspring/decimal v1.2.0
 	github.com/spf13/cobra v0.0.3
-	github.com/spf13/pflag v1.0.1 // indirect
 	github.com/stretchr/testify v1.5.1
 	github.com/templexxx/cpufeat v0.0.0-20170927014610-3794dfbfb047 // indirect
 	github.com/templexxx/xor v0.0.0-20170926022130-0af8e873c554 // indirect
 	github.com/tidwall/gjson v1.6.1 // indirect
 	github.com/tjfoc/gmsm v0.0.0-20171124023159-98aa888b79d8 // indirect
-	github.com/ttlv/common_utils v0.0.0-20200523105101-9edf9c59da11
+	github.com/ttlv/common_utils v0.0.0-20200916020856-79e29d0f8aba
+	github.com/ttlv/frp_adapter v0.0.0-20200916013642-bc59d295a43e // indirect
 	github.com/vaughan0/go-ini v0.0.0-20130923145212-a98ad7ee00ec
 	github.com/xtaci/lossyconn v0.0.0-20190602105132-8df528c0c9ae // indirect
 	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
+	golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e
 	gopkg.in/square/go-jose.v2 v2.4.1 // indirect
 )
