@@ -28,7 +28,7 @@ require (
 	github.com/templexxx/xor v0.0.0-20170926022130-0af8e873c554 // indirect
 	github.com/tidwall/gjson v1.6.1
 	github.com/tjfoc/gmsm v0.0.0-20171124023159-98aa888b79d8 // indirect
-	github.com/ttlv/common_utils v0.0.0-20200916071815-1d53009551a6
+	github.com/ttlv/common_utils v0.0.0-20200916072500-71bbaf7bac6b
 	github.com/ttlv/frp_adapter v0.0.0-20200916013642-bc59d295a43e
 	github.com/vaughan0/go-ini v0.0.0-20130923145212-a98ad7ee00ec
 	github.com/xtaci/lossyconn v0.0.0-20190602105132-8df528c0c9ae // indirect
