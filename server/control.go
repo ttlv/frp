@@ -495,6 +495,7 @@ func (ctl *Control) manager() {
 						updateParams.Add("frp_server_ip_address", util.GetExternalIp())
 						updateParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 						updateParams.Add("status", consts.Online)
+						updateParams.Add("node_maintenance_name", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID))
 						result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, updateParams, nil)
 						if err != nil {
 							xl.Info("update frpc info into k8s failed,err is %v", err)
