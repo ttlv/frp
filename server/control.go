@@ -464,14 +464,11 @@ func (ctl *Control) manager() {
 					// 已经注册的节点因为frps服务重启，可能会出现重新分配port的情况，所以需要先去k8s中获取旧的数据进行对比
 					// 结果以frps的结果为准，如果两者不一样，则进行更新操作
 					var (
-						getParams    = url.Values{}
 						createParams = url.Values{}
 						updateParams = url.Values{}
 						coreFrp      = entries.CoreFrp{}
 					)
-
-					getParams.Set("node_maintenance_name", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID))
-					getResult, err := ttlv_utils.Get(ctl.serverCfg.FrpAdapterServerAddress+"/frp_fetch", getParams)
+					getResult, err := ttlv_utils.Get(fmt.Sprintf("%v/fetch_frp/%v", ctl.serverCfg.FrpAdapterServerAddress+"/frp_fetch", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID)), nil)
 					if err != nil {
 						xl.Info("fetch info %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
 					}
