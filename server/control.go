@@ -472,9 +472,9 @@ func (ctl *Control) manager() {
 					if err != nil {
 						xl.Info("fetch info %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
 					}
-					if gjson.Get(getResult, ".error.code").String() == "400" {
+					if gjson.Get(getResult, "error.code").String() == "400" {
 						xl.Info(gjson.Get(getResult, "message").String())
-					} else if gjson.Get(getResult, ".error.code").String() == "401" {
+					} else if gjson.Get(getResult, "error.code").String() == "401" {
 						// 不存在当前的资源对象，需要创建
 						// Frps的公网IP地址q
 						createParams.Add("frp_server_ip_address", util.GetExternalIp())
