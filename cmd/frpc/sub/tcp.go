@@ -16,6 +16,7 @@ package sub
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -58,6 +59,10 @@ var tcpCmd = &cobra.Command{
 		var prefix string
 		if user != "" {
 			prefix = user + "."
+		}
+		// 如果m.ProxyName是ssh_rand则重新分配一个随机的名字，格式是ssh_random_uuid
+		if proxyName == "ssh_random" {
+			cfg.ProxyName = fmt.Sprintf("%v_%v", proxyName, uuid.Must(uuid.New(), nil))
 		}
 		cfg.ProxyName = prefix + proxyName
 		cfg.ProxyType = consts.TcpProxy
