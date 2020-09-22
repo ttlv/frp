@@ -43,7 +43,6 @@ import (
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
 	"github.com/fatedier/golib/errors"
-	"github.com/satori/go.uuid"
 	"github.com/tidwall/gjson"
 	"github.com/ttlv/frp_adapter/app/entries"
 )
