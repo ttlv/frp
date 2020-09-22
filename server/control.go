@@ -43,6 +43,7 @@ import (
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
 	"github.com/fatedier/golib/errors"
+	"github.com/satori/go.uuid"
 	"github.com/tidwall/gjson"
 	"github.com/ttlv/frp_adapter/app/entries"
 )
@@ -446,6 +447,10 @@ func (ctl *Control) manager() {
 				retContent, err := ctl.pluginManager.NewProxy(content)
 				if err == nil {
 					m = &retContent.NewProxy
+					// 如果m.ProxyName是ssh_rand则重新分配一个随机的名字，格式是ssh_random_uuid
+					if m.ProxyName == "ssh_random" {
+						m.ProxyName = fmt.Sprintf("%v_%v", m.ProxyName, fmt.Sprintf("%v", uuid.Must(uuid.NewV4(), nil)))
+					}
 					remoteAddr, err = ctl.RegisterProxy(m)
 				}
 
