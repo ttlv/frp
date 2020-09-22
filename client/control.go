@@ -18,6 +18,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	uuid "github.com/satori/go.uuid"
 	"io"
 	"net"
 	"runtime/debug"
@@ -320,6 +321,10 @@ func (ctl *Control) msgHandler() {
 			case *msg.ReqWorkConn:
 				go ctl.HandleReqWorkConn(m)
 			case *msg.NewProxyResp:
+				// 如果m.ProxyName是ssh_rand则重新分配一个随机的名字，格式是ssh_random_uuid
+				if m.ProxyName == "ssh_random" {
+					m.ProxyName = fmt.Sprintf("%v_%v", m.ProxyName, fmt.Sprintf("%v", uuid.Must(uuid.NewV4(), nil)))
+				}
 				ctl.HandleNewProxyResp(m)
 			case *msg.Pong:
 				if m.Error != "" {
