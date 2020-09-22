@@ -16,6 +16,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"reflect"
 	"strconv"
 	"strings"
@@ -1132,7 +1133,9 @@ func LoadAllConfFromIni(prefix string, content string, startProxy map[string]str
 		if name == "common" {
 			continue
 		}
-
+		if name == "ssh_random" {
+			name = fmt.Sprintf("%v_%v", name, uuid.Must(uuid.New(), nil))
+		}
 		_, shouldStart := startProxy[name]
 		if !startAll && !shouldStart {
 			continue
