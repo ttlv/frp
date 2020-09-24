@@ -7,7 +7,7 @@ import (
 type ServerMetrics interface {
 	NewClient()
 	CloseClient()
-	NewProxy(name string, proxyType string, uniqueID string)
+	NewProxy(name string, proxyType string, uniqueID string, publicIpAddress string)
 	CloseProxy(name string, proxyType string)
 	OpenConnection(name string, proxyType string)
 	CloseConnection(name string, proxyType string)
@@ -27,9 +27,10 @@ func Register(m ServerMetrics) {
 
 type noopServerMetrics struct{}
 
-func (noopServerMetrics) NewClient()                                                      {}
-func (noopServerMetrics) CloseClient()                                                    {}
-func (noopServerMetrics) NewProxy(name string, proxyType string, uniqueID string)         {}
+func (noopServerMetrics) NewClient()   {}
+func (noopServerMetrics) CloseClient() {}
+func (noopServerMetrics) NewProxy(name string, proxyType string, uniqueID string, publicIpAddress string) {
+}
 func (noopServerMetrics) CloseProxy(name string, proxyType string)                        {}
 func (noopServerMetrics) OpenConnection(name string, proxyType string)                    {}
 func (noopServerMetrics) CloseConnection(name string, proxyType string)                   {}

@@ -84,7 +84,7 @@ func (m *serverMetrics) CloseClient() {
 	m.info.ClientCounts.Dec(1)
 }
 
-func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string) {
+func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string, publicIpAddress string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	counter, ok := m.info.ProxyTypeCounts[proxyType]
@@ -97,12 +97,13 @@ func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string)
 	proxyStats, ok := m.info.ProxyStatistics[name]
 	if !(ok && proxyStats.ProxyType == proxyType) {
 		proxyStats = &ProxyStatistics{
-			Name:       name,
-			ProxyType:  proxyType,
-			UniqueID:   uniqueID,
-			CurConns:   metric.NewCounter(),
-			TrafficIn:  metric.NewDateCounter(ReserveDays),
-			TrafficOut: metric.NewDateCounter(ReserveDays),
+			Name:            name,
+			ProxyType:       proxyType,
+			UniqueID:        uniqueID,
+			PublicIpAddress: publicIpAddress,
+			CurConns:        metric.NewCounter(),
+			TrafficIn:       metric.NewDateCounter(ReserveDays),
+			TrafficOut:      metric.NewDateCounter(ReserveDays),
 		}
 		m.info.ProxyStatistics[name] = proxyStats
 	}
@@ -237,6 +238,7 @@ func (m *serverMetrics) GetProxiesByTypeAndName(proxyType string, proxyName stri
 			TodayTrafficOut: proxyStats.TrafficOut.TodayCount(),
 			CurConns:        proxyStats.CurConns.Count(),
 			UniqueID:        proxyStats.UniqueID,
+			PublicIpAddress: proxyStats.PublicIpAddress,
 		}
 		if !proxyStats.LastStartTime.IsZero() {
 			res.LastStartTime = proxyStats.LastStartTime.Format("01-02 15:04:05")

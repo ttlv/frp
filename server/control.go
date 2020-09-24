@@ -459,7 +459,7 @@ func (ctl *Control) manager() {
 				} else {
 					resp.RemoteAddr = remoteAddr
 					xl.Info("new proxy [%s] success", m.ProxyName)
-					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID)
+					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID, util.GetExternalIp())
 					// 设置Frps hook,当有新的frpc注册进来，简历tcp连接时，立刻通知frp_adapter服务
 					// 已经注册的节点因为frps服务重启，可能会出现重新分配port的情况，所以需要先去k8s中获取旧的数据进行对比
 					// 结果以frps的结果为准，如果两者不一样，则进行更新操作

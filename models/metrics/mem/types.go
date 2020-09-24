@@ -41,6 +41,7 @@ type ProxyStats struct {
 	LastCloseTime   string
 	CurConns        int64
 	UniqueID        string
+	PublicIpAddress string
 }
 
 type ProxyTrafficInfo struct {
@@ -50,14 +51,15 @@ type ProxyTrafficInfo struct {
 }
 
 type ProxyStatistics struct {
-	Name          string
-	ProxyType     string
-	TrafficIn     metric.DateCounter
-	TrafficOut    metric.DateCounter
-	CurConns      metric.Counter
-	LastStartTime time.Time
-	LastCloseTime time.Time
-	UniqueID      string
+	Name            string
+	ProxyType       string
+	TrafficIn       metric.DateCounter
+	TrafficOut      metric.DateCounter
+	CurConns        metric.Counter
+	LastStartTime   time.Time
+	LastCloseTime   time.Time
+	UniqueID        string
+	PublicIpAddress string
 }
 
 type ServerStatistics struct {

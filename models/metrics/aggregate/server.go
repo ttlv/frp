@@ -56,9 +56,9 @@ func (m *serverMetrics) CloseClient() {
 	}
 }
 
-func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string) {
+func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string, publicIpAddress string) {
 	for _, v := range m.ms {
-		v.NewProxy(name, proxyType, uniqueID)
+		v.NewProxy(name, proxyType, uniqueID, publicIpAddress)
 	}
 }
 
