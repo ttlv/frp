@@ -468,7 +468,7 @@ func (ctl *Control) manager() {
 						updateParams = url.Values{}
 						coreFrp      = entries.CoreFrp{}
 					)
-					getResult, err := ttlv_utils.Get(fmt.Sprintf("%v/frp_fetch/%v", ctl.serverCfg.FrpAdapterServerAddress, fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID)), nil)
+					getResult, err := ttlv_utils.Get(fmt.Sprintf("%v/frp_fetch/%v", ctl.serverCfg.FrpAdapterServerAddress, fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID)), nil, nil)
 					if err != nil {
 						xl.Info("fetch %v from k8s failed,err is %v", fmt.Sprintf("node_maintenance_name-%v", ctl.loginMsg.UniqueID), err)
 					}
@@ -495,8 +495,8 @@ func (ctl *Control) manager() {
 						updateParams.Add("frp_server_ip_address", util.GetExternalIp())
 						updateParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 						updateParams.Add("status", consts.Online)
-						updateParams.Add("node_maintenance_name", fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID))
-						result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, updateParams, nil)
+						updateParams.Add("unique_id", fmt.Sprintf("%v", ctl.loginMsg.UniqueID))
+						result, err := ttlv_utils.Put(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, updateParams, nil)
 						if err != nil {
 							xl.Info("update frpc info into k8s failed,err is %v", err)
 						}
