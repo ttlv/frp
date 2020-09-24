@@ -206,6 +206,7 @@ func (m *serverMetrics) GetProxiesByType(proxyType string) []*ProxyStats {
 			TodayTrafficOut: proxyStats.TrafficOut.TodayCount(),
 			CurConns:        proxyStats.CurConns.Count(),
 			UniqueID:        proxyStats.UniqueID,
+			PublicIpAddress: proxyStats.PublicIpAddress,
 		}
 		if !proxyStats.LastStartTime.IsZero() {
 			ps.LastStartTime = proxyStats.LastStartTime.Format("01-02 15:04:05")
