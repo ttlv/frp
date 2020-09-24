@@ -393,7 +393,7 @@ func (ctl *Control) stoper() {
 	v := url.Values{}
 	v.Add("status", consts.Offline)
 	v.Add("node_maintenance_name", fmt.Sprintf("nodemaintenances-%v", ctl.loginMsg.UniqueID))
-	result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, v, nil)
+	result, err := ttlv_utils.Put(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, v, nil)
 	if err != nil {
 		xl.Info("update frpc info into k8s failed,err is %v", err)
 	}
