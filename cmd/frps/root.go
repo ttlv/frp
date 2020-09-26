@@ -16,6 +16,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/ttlv/common_utils/config/frp_adapter"
+	"github.com/ttlv/common_utils/utils"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -26,8 +28,6 @@ import (
 	"github.com/fatedier/frp/utils/log"
 	"github.com/fatedier/frp/utils/util"
 	"github.com/fatedier/frp/utils/version"
-	"github.com/ttlv/common_utils/config/frp_adapter"
-	"github.com/ttlv/common_utils/utils"
 )
 
 const (
@@ -124,6 +124,7 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		defer utils.Put(fmt.Sprintf("%v/nm_useless", frp_adapter.MustGetFrpAdapterConfig().Address), nil, nil, nil)
 		return nil
 	},
 }
@@ -214,6 +215,5 @@ func runServer(cfg config.ServerCommonConf) (err error) {
 	}
 	log.Info("start frps success")
 	svr.Run()
-	defer utils.Put(fmt.Sprintf("%v/nm_useless", frp_adapter.MustGetFrpAdapterConfig().Address), nil, nil, nil)
 	return
 }
