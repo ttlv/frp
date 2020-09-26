@@ -15,7 +15,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -23,15 +22,11 @@ import (
 
 	_ "github.com/fatedier/frp/assets/frps/statik"
 	_ "github.com/fatedier/frp/models/metrics"
-	"github.com/ttlv/common_utils/config/frp_adapter"
-	"github.com/ttlv/common_utils/utils"
 )
 
 func main() {
-	frpAdapterServerAddress := frp_adapter.MustGetFrpAdapterConfig().Address
 	crypto.DefaultSalt = "frp"
 	rand.Seed(time.Now().UnixNano())
 
 	Execute()
-	defer utils.Put(fmt.Sprintf("%v/nm_useless", frpAdapterServerAddress), nil, nil, nil)
 }
