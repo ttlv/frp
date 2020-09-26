@@ -14,7 +14,6 @@ require (
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/jinzhu/configor v1.2.0
 	github.com/klauspost/cpuid v1.2.0 // indirect
 	github.com/klauspost/reedsolomon v1.9.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
@@ -30,7 +29,7 @@ require (
 	github.com/templexxx/xor v0.0.0-20170926022130-0af8e873c554 // indirect
 	github.com/tidwall/gjson v1.6.1
 	github.com/tjfoc/gmsm v0.0.0-20171124023159-98aa888b79d8 // indirect
-	github.com/ttlv/common_utils v0.0.0-20200924092354-8b1cf0b8a143
+	github.com/ttlv/common_utils v0.0.0-20200926094908-a896a666228e
 	github.com/ttlv/frp_adapter v0.0.0-20200916013642-bc59d295a43e
 	github.com/vaughan0/go-ini v0.0.0-20130923145212-a98ad7ee00ec
 	github.com/xtaci/lossyconn v0.0.0-20190602105132-8df528c0c9ae // indirect
