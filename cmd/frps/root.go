@@ -122,9 +122,9 @@ var rootCmd = &cobra.Command{
 		err = runServer(cfg)
 		if err != nil {
 			fmt.Println(err)
+			utils.Put(fmt.Sprintf("%v/nm_useless", frp_adapter.MustGetFrpAdapterConfig().Address), nil, nil, nil)
 			os.Exit(1)
 		}
-		defer utils.Put(fmt.Sprintf("%v/nm_useless", frp_adapter.MustGetFrpAdapterConfig().Address), nil, nil, nil)
 		return nil
 	},
 }
