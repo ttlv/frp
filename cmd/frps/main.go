@@ -15,7 +15,14 @@
 package main
 
 import (
+	"fmt"
+	"github.com/ttlv/common_utils/config/frp_adapter"
+	"github.com/ttlv/common_utils/utils"
+	"log"
 	"math/rand"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/fatedier/golib/crypto"
@@ -27,6 +34,18 @@ import (
 func main() {
 	crypto.DefaultSalt = "frp"
 	rand.Seed(time.Now().UnixNano())
+	signalChan := make(chan os.Signal, 1)
+	go func() {
+		<-signalChan
+		r, err := utils.Put(fmt.Sprintf("%v/nm_useless", frp_adapter.MustGetFrpAdapterConfig().Address), nil, nil, nil)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(r)
+		os.Exit(1)
+	}()
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 	Execute()
+
 }

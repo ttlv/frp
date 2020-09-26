@@ -16,8 +16,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/ttlv/common_utils/config/frp_adapter"
-	"github.com/ttlv/common_utils/utils"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -122,7 +120,6 @@ var rootCmd = &cobra.Command{
 		err = runServer(cfg)
 		if err != nil {
 			fmt.Println(err)
-			utils.Put(fmt.Sprintf("%v/nm_useless", frp_adapter.MustGetFrpAdapterConfig().Address), nil, nil, nil)
 			os.Exit(1)
 		}
 		return nil
