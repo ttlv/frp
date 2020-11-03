@@ -318,14 +318,17 @@ func getHashResult() string {
 	}
 	// 对比全网卡数组与虚拟网卡数组，获取真实存在的物理网卡数组
 	for _, inter := range interfaces {
+		var isVirtual bool
 		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
 			continue
 		}
-		for _, virtual := range virtualNetInterfaces {
+		for index, virtual := range virtualNetInterfaces {
 			if inter.Name == virtual {
-				continue
+				isVirtual = true
 			}
-			physicalNetInterfaces = append(physicalNetInterfaces, fmt.Sprintf("%v", inter.HardwareAddr))
+			if !isVirtual && index == len(virtualNetInterfaces)-1 {
+				physicalNetInterfaces = append(physicalNetInterfaces, fmt.Sprintf("%v", inter.HardwareAddr))
+			}
 		}
 	}
 	for _, physical := range physicalNetInterfaces {
