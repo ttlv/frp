@@ -317,7 +317,7 @@ func getHashResult() string {
 			continue
 		}
 		for _, virtual := range virtualNetInterfaces {
-			if inter.Name == virtual {
+			if inter.Name == virtual || virtual == "" {
 				continue
 			}
 			physicalNetInterfaces = append(physicalNetInterfaces, fmt.Sprintf("%v", inter.HardwareAddr))
