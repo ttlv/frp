@@ -39,6 +39,7 @@ import (
 
 	fmux "github.com/hashicorp/yamux"
 	"github.com/shopspring/decimal"
+	"os/exec"
 )
 
 // Service is a client service.
@@ -304,12 +305,26 @@ func (svr *Service) Close() {
 
 func getHashResult() string {
 	var deciamlArraies []decimal.Decimal
+	var physicalNetInterfaces []string
 	interfaces, _ := net.Interfaces()
+	// 获取虚拟网卡名
+	cmd := exec.Command("ls", "/sys/devices/virtual/net/")
+	out, _ := cmd.CombinedOutput()
+	virtualNetInterfaces := strings.Split(string(out), "\n")
+	// 对比全网卡数组与虚拟网卡数组，获取真实存在的物理网卡数组
 	for _, inter := range interfaces {
 		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
 			continue
 		}
-		hex := strings.Replace(fmt.Sprintf("%v", inter.HardwareAddr), ":", "", -1)
+		for _, virtual := range virtualNetInterfaces {
+			if inter.Name == virtual {
+				continue
+			}
+			physicalNetInterfaces = append(physicalNetInterfaces, fmt.Sprintf("%v", inter.HardwareAddr))
+		}
+	}
+	for _, physical := range physicalNetInterfaces {
+		hex := strings.Replace(physical, ":", "", -1)
 		deciamlArraies = append(deciamlArraies, decimal.NewFromBigInt(hexToBigInt(hex), 1))
 	}
 	hashInstance := sha1.New()
