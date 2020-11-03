@@ -305,20 +305,24 @@ func (svr *Service) Close() {
 
 func getHashResult() string {
 	var deciamlArraies []decimal.Decimal
-	var physicalNetInterfaces []string
+	var physicalNetInterfaces, virtualNetInterfaces []string
 	interfaces, _ := net.Interfaces()
 	// 获取虚拟网卡名
 	cmd := exec.Command("ls", "/sys/devices/virtual/net/")
 	out, _ := cmd.CombinedOutput()
-	virtualNetInterfaces := strings.Split(string(out), "\n")
+	temps := strings.Split(string(out), "\n")
+	for _, temp := range temps {
+		if temp != "" {
+			virtualNetInterfaces = append(virtualNetInterfaces, temp)
+		}
+	}
 	// 对比全网卡数组与虚拟网卡数组，获取真实存在的物理网卡数组
 	for _, inter := range interfaces {
 		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
 			continue
 		}
 		for _, virtual := range virtualNetInterfaces {
-			virtual = strings.TrimSpace(virtual)
-			if inter.Name == virtual || virtual == "" {
+			if inter.Name == virtual {
 				continue
 			}
 			physicalNetInterfaces = append(physicalNetInterfaces, fmt.Sprintf("%v", inter.HardwareAddr))
