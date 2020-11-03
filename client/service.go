@@ -317,6 +317,7 @@ func getHashResult() string {
 			continue
 		}
 		for _, virtual := range virtualNetInterfaces {
+			virtual = strings.TrimSpace(virtual)
 			if inter.Name == virtual || virtual == "" {
 				continue
 			}
