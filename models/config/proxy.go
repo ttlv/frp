@@ -1140,7 +1140,7 @@ func LoadAllConfFromIni(prefix string, content string, startProxy map[string]str
 		if name == "ssh-#" {
 			// 获取uniqueId
 			uniqueId := util.GetUniqueId()
-			exec.Command("sed -n", fmt.Sprintf("s/#/%s", uniqueId))
+			exec.Command("sed -i ''", fmt.Sprintf("s/#/%s/g %s", uniqueId, "/etc/frp/frpc.ini"))
 			name = fmt.Sprintf("ssh-%s", uniqueId)
 		}
 		_, shouldStart := startProxy[name]
