@@ -16,7 +16,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"reflect"
 	"strconv"
 	"strings"
@@ -24,6 +23,7 @@ import (
 	"github.com/fatedier/frp/models/consts"
 	"github.com/fatedier/frp/models/msg"
 	"github.com/fatedier/frp/utils/util"
+	"os/exec"
 
 	ini "github.com/vaughan0/go-ini"
 )
@@ -1133,8 +1133,15 @@ func LoadAllConfFromIni(prefix string, content string, startProxy map[string]str
 		if name == "common" {
 			continue
 		}
-		if name == "ssh_random" {
-			name = fmt.Sprintf("%v_%v", name, uuid.Must(uuid.New(), nil))
+		// 如果读取到ssh-%v模板，说明frpc的模板是初始化模板，第一次
+		// 连接需要根据物理网卡获取uniqueId,然后再将ssh-%v改成
+		// ssh-uniqueId的格式，如果已经是ssh-uniqueId的格式
+		// 则不作修改
+		if name == "ssh-#" {
+			// 获取uniqueId
+			uniqueId := util.GetUniqueId()
+			exec.Command("sed -n", fmt.Sprintf("s/#/%s", uniqueId))
+			name = fmt.Sprintf("ssh-%s", uniqueId)
 		}
 		_, shouldStart := startProxy[name]
 		if !startAll && !shouldStart {

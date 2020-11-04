@@ -17,10 +17,15 @@ package util
 import (
 	"crypto/md5"
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"github.com/shopspring/decimal"
 	"io/ioutil"
+	"math/big"
+	"net"
 	"net/http"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -120,4 +125,59 @@ func GetExternalIp() string {
 	defer resp.Body.Close()
 	content, _ := ioutil.ReadAll(resp.Body)
 	return string(content)
+}
+
+func GetUniqueId() string {
+	var deciamlArraies []decimal.Decimal
+	var physicalNetInterfaces, virtualNetInterfaces []string
+	interfaces, _ := net.Interfaces()
+	// 获取虚拟网卡名
+	cmd := exec.Command("ls", "/sys/devices/virtual/net/")
+	out, _ := cmd.CombinedOutput()
+	temps := strings.Split(string(out), "\n")
+	for _, temp := range temps {
+		if temp != "" {
+			virtualNetInterfaces = append(virtualNetInterfaces, temp)
+		}
+	}
+	// 对比全网卡数组与虚拟网卡数组，获取真实存在的物理网卡数组
+	for _, inter := range interfaces {
+		var isVirtual bool
+		if fmt.Sprintf("%v", inter.HardwareAddr) == "" {
+			continue
+		}
+		for index, virtual := range virtualNetInterfaces {
+			if inter.Name == virtual {
+				isVirtual = true
+			}
+			if !isVirtual && index == len(virtualNetInterfaces)-1 {
+				physicalNetInterfaces = append(physicalNetInterfaces, fmt.Sprintf("%v", inter.HardwareAddr))
+			}
+		}
+	}
+	for _, physical := range physicalNetInterfaces {
+		hex := strings.Replace(physical, ":", "", -1)
+		deciamlArraies = append(deciamlArraies, decimal.NewFromBigInt(hexToBigInt(hex), 1))
+	}
+	hashInstance := sha1.New()
+	hashInstance.Write([]byte(sortDecimalArray(deciamlArraies)))
+	bytes := hashInstance.Sum(nil)
+	return fmt.Sprintf("%x", bytes)[20:]
+}
+
+func sortDecimalArray(deciamlArraies []decimal.Decimal) string {
+	min := deciamlArraies[0]
+	for _, item := range deciamlArraies {
+		if item.LessThan(min) {
+			min = item
+		}
+	}
+	return min.String()
+}
+
+func hexToBigInt(hex string) *big.Int {
+	n := new(big.Int)
+	n, _ = n.SetString(hex[2:], 16)
+
+	return n
 }
