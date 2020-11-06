@@ -1137,7 +1137,7 @@ func LoadAllConfFromIni(prefix string, content string, startProxy map[string]str
 		// 连接需要根据物理网卡获取uniqueId,然后再将ssh-%v改成
 		// ssh-uniqueId的格式，如果已经是ssh-uniqueId的格式
 		// 则不作修改
-		if name == "ssh-#" {
+		if name == "ssh-#unique-id#" {
 			// 获取uniqueId
 			uniqueId := util.GetUniqueId()
 			shell := fmt.Sprintf(`sed -i 's/#unique-id#/%v/g' /etc/frp/frpc.ini`, uniqueId)
