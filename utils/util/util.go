@@ -21,10 +21,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/shopspring/decimal"
-	"io/ioutil"
 	"math/big"
 	"net"
-	"net/http"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -130,6 +128,7 @@ func GetExternalIp() string {
 			}
 		}
 	}
+	return ""
 }
 
 func GetUniqueId() string {
