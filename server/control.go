@@ -476,7 +476,7 @@ func (ctl *Control) manager() {
 						xl.Info(gjson.Get(getResult, "message").String())
 					} else if gjson.Get(getResult, "error.code").String() == "404" {
 						// 不存在当前的资源对象，需要创建
-						// Frps的公网IP地址q
+						// Frps的公网IP地址
 						createParams.Add("frp_server_ip_address", util.GetExternalIp())
 						// Frps与Frpc连接的Port
 						createParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))

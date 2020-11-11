@@ -118,13 +118,18 @@ func GenerateResponseErrorString(summary string, err error, detailed bool) strin
 }
 
 func GetExternalIp() string {
-	resp, err := http.Get("https://myexternalip.com/raw")
+	addrs, err := net.InterfaceAddrs()
 	if err != nil {
+		fmt.Println(err)
 		return ""
 	}
-	defer resp.Body.Close()
-	content, _ := ioutil.ReadAll(resp.Body)
-	return string(content)
+	for _, value := range addrs {
+		if ipnet, ok := value.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+		}
+	}
 }
 
 func GetUniqueId() string {
