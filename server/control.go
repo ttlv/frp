@@ -459,7 +459,7 @@ func (ctl *Control) manager() {
 				} else {
 					resp.RemoteAddr = remoteAddr
 					xl.Info("new proxy [%s] success", m.ProxyName)
-					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID, util.GetExternalIp())
+					metrics.Server.NewProxy(m.ProxyName, m.ProxyType, ctl.loginMsg.UniqueID, util.GetInternalIp())
 					// 设置Frps hook,当有新的frpc注册进来，建立tcp连接时，立刻通知frp_adapter服务
 					// 已经注册的节点因为frps服务重启，可能会出现重新分配port的情况，所以需要先去k8s中获取旧的数据进行对比
 					// 结果以frps的结果为准，如果两者不一样，则进行更新操作
@@ -477,7 +477,7 @@ func (ctl *Control) manager() {
 					} else if gjson.Get(getResult, "error.code").String() == "404" {
 						// 不存在当前的资源对象，需要创建
 						// Frps的公网IP地址
-						createParams.Add("frp_server_ip_address", util.GetExternalIp())
+						createParams.Add("frp_server_ip_address", util.GetInternalIp())
 						// Frps与Frpc连接的Port
 						createParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 						// Frpc uniqueID
@@ -492,7 +492,7 @@ func (ctl *Control) manager() {
 					} else {
 						// 当前的对象已经存在，直接执行更新操作
 						json.Unmarshal([]byte(getResult), &coreFrp)
-						updateParams.Add("frp_server_ip_address", util.GetExternalIp())
+						updateParams.Add("frp_server_ip_address", util.GetInternalIp())
 						updateParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 						updateParams.Add("status", consts.Online)
 						updateParams.Add("unique_id", fmt.Sprintf("%v", ctl.loginMsg.UniqueID))

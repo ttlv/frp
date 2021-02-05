@@ -115,7 +115,7 @@ func GenerateResponseErrorString(summary string, err error, detailed bool) strin
 	}
 }
 
-func GetExternalIp() string {
+func GetInternalIp() string {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		fmt.Println(err)
