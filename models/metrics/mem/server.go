@@ -84,7 +84,7 @@ func (m *serverMetrics) CloseClient() {
 	m.info.ClientCounts.Dec(1)
 }
 
-func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string, publicIpAddress string) {
+func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string, macAddress string, publicIpAddress string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	counter, ok := m.info.ProxyTypeCounts[proxyType]
@@ -100,6 +100,7 @@ func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string,
 			Name:            name,
 			ProxyType:       proxyType,
 			UniqueID:        uniqueID,
+			MacAddress:      macAddress,
 			PublicIpAddress: publicIpAddress,
 			CurConns:        metric.NewCounter(),
 			TrafficIn:       metric.NewDateCounter(ReserveDays),
@@ -239,6 +240,7 @@ func (m *serverMetrics) GetProxiesByTypeAndName(proxyType string, proxyName stri
 			TodayTrafficOut: proxyStats.TrafficOut.TodayCount(),
 			CurConns:        proxyStats.CurConns.Count(),
 			UniqueID:        proxyStats.UniqueID,
+			MacAddress:      proxyStats.MacAddress,
 			PublicIpAddress: proxyStats.PublicIpAddress,
 		}
 		if !proxyStats.LastStartTime.IsZero() {

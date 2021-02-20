@@ -205,6 +205,7 @@ func (svr *Service) keepControllerWorking() {
 func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 	xl := xlog.FromContextSafe(svr.ctx)
 	var tlsConfig *tls.Config
+	uniqueId, macAddress := util.GetUniqueId()
 	if svr.cfg.TLSEnable {
 		tlsConfig = &tls.Config{
 			InsecureSkipVerify: true,
@@ -242,15 +243,16 @@ func (svr *Service) login() (conn net.Conn, session *fmux.Session, err error) {
 		conn = stream
 	}
 	loginMsg := &msg.Login{
-		Arch:      runtime.GOARCH,
-		Os:        runtime.GOOS,
-		PoolCount: svr.cfg.PoolCount,
-		User:      svr.cfg.User,
-		Version:   version.Full(),
-		Timestamp: time.Now().Unix(),
-		RunId:     svr.runId,
-		Metas:     svr.cfg.Metas,
-		UniqueID:  util.GetUniqueId(),
+		Arch:       runtime.GOARCH,
+		Os:         runtime.GOOS,
+		PoolCount:  svr.cfg.PoolCount,
+		User:       svr.cfg.User,
+		Version:    version.Full(),
+		Timestamp:  time.Now().Unix(),
+		RunId:      svr.runId,
+		Metas:      svr.cfg.Metas,
+		UniqueID:   uniqueId,
+		MacAddress: macAddress,
 	}
 
 	// Add auth

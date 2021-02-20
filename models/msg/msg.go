@@ -72,6 +72,7 @@ type Login struct {
 	RunId        string            `json:"run_id"`
 	Metas        map[string]string `json:"metas"`
 	UniqueID     string            `json:"unique_id"`
+	MacAddress   string            `json:"mac_address"`
 
 	// Some global configures.
 	PoolCount int `json:"pool_count"`

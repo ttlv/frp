@@ -41,6 +41,7 @@ type ProxyStats struct {
 	LastCloseTime   string
 	CurConns        int64
 	UniqueID        string
+	MacAddress      string
 	PublicIpAddress string
 }
 
@@ -59,6 +60,7 @@ type ProxyStatistics struct {
 	LastStartTime   time.Time
 	LastCloseTime   time.Time
 	UniqueID        string
+	MacAddress      string
 	PublicIpAddress string
 }
 

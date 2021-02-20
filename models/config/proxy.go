@@ -1139,7 +1139,7 @@ func LoadAllConfFromIni(prefix string, content string, startProxy map[string]str
 		// 则不作修改
 		if name == "ssh-#unique-id#" {
 			// 获取uniqueId
-			uniqueId := util.GetUniqueId()
+			uniqueId, _ := util.GetUniqueId()
 			shell := fmt.Sprintf(`sed -i 's/#unique-id#/%v/g' /etc/frp/frpc.ini`, uniqueId)
 			exec.Command("/bin/bash", "-c", shell).Run()
 			name = fmt.Sprintf("ssh-%s", uniqueId)

@@ -72,6 +72,11 @@
       sortable>
     </el-table-column>
     <el-table-column
+      label="Mac Address"
+      prop="mac_address"
+      sortable>
+    </el-table-column>
+    <el-table-column
       label="status"
       prop="status"
       sortable>

@@ -131,9 +131,12 @@ func GetInternalIp() string {
 	return ""
 }
 
-func GetUniqueId() string {
-	var deciamlArraies []decimal.Decimal
-	var physicalNetInterfaces, virtualNetInterfaces []string
+func GetUniqueId() (string, string) {
+	var (
+		physicalNetInterfaces, virtualNetInterfaces []string
+		keys                                        []decimal.Decimal
+	)
+	deciamlArraies := make(map[decimal.Decimal]string)
 	interfaces, _ := net.Interfaces()
 	// 获取虚拟网卡名
 	cmd := exec.Command("ls", "/sys/devices/virtual/net/")
@@ -161,22 +164,23 @@ func GetUniqueId() string {
 	}
 	for _, physical := range physicalNetInterfaces {
 		hex := strings.Replace(physical, ":", "", -1)
-		deciamlArraies = append(deciamlArraies, decimal.NewFromBigInt(hexToBigInt(hex), 1))
+		keys = append(keys, decimal.NewFromBigInt(hexToBigInt(hex), 1))
+		deciamlArraies[decimal.NewFromBigInt(hexToBigInt(hex), 1)] = physical
 	}
 	hashInstance := sha1.New()
-	hashInstance.Write([]byte(sortDecimalArray(deciamlArraies)))
+	hashInstance.Write([]byte(sortDecimalArray(keys).String()))
 	bytes := hashInstance.Sum(nil)
-	return fmt.Sprintf("%x", bytes)[20:]
+	return fmt.Sprintf("%x", bytes)[20:], deciamlArraies[sortDecimalArray(keys)]
 }
 
-func sortDecimalArray(deciamlArraies []decimal.Decimal) string {
+func sortDecimalArray(deciamlArraies []decimal.Decimal) decimal.Decimal {
 	min := deciamlArraies[0]
 	for _, item := range deciamlArraies {
 		if item.LessThan(min) {
 			min = item
 		}
 	}
-	return min.String()
+	return min
 }
 
 func hexToBigInt(hex string) *big.Int {

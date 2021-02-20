@@ -29,7 +29,7 @@ func (m *serverMetrics) CloseClient() {
 	m.clientCount.Dec()
 }
 
-func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string, publicIpAddress string) {
+func (m *serverMetrics) NewProxy(name string, proxyType string, uniqueID string, macAddress string, publicIpAddress string) {
 	m.proxyCount.WithLabelValues(proxyType).Inc()
 }
 
