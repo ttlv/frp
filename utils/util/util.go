@@ -20,12 +20,13 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"github.com/shopspring/decimal"
 	"math/big"
 	"net"
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"github.com/shopspring/decimal"
 )
 
 // RandId return a rand string used in frp.
@@ -136,7 +137,7 @@ func GetUniqueId() (string, string) {
 		physicalNetInterfaces, virtualNetInterfaces []string
 		keys                                        []decimal.Decimal
 	)
-	deciamlArraies := make(map[decimal.Decimal]string)
+	deciamlArraies := make(map[int64]string)
 	interfaces, _ := net.Interfaces()
 	// 获取虚拟网卡名
 	cmd := exec.Command("ls", "/sys/devices/virtual/net/")
@@ -167,22 +168,22 @@ func GetUniqueId() (string, string) {
 	for _, physical := range physicalNetInterfaces {
 		hex := strings.Replace(physical, ":", "", -1)
 		keys = append(keys, decimal.NewFromBigInt(hexToBigInt(hex), 1))
-		deciamlArraies[decimal.NewFromBigInt(hexToBigInt(hex), 1)] = physical
+		deciamlArraies[decimal.NewFromBigInt(hexToBigInt(hex), 1).IntPart()] = physical
 	}
 	hashInstance := sha1.New()
-	hashInstance.Write([]byte(sortDecimalArray(keys).String()))
+	hashInstance.Write([]byte(fmt.Sprintf("%v", sortDecimalArray(keys))))
 	bytes := hashInstance.Sum(nil)
 	return fmt.Sprintf("%x", bytes)[20:], deciamlArraies[sortDecimalArray(keys)]
 }
 
-func sortDecimalArray(deciamlArraies []decimal.Decimal) decimal.Decimal {
+func sortDecimalArray(deciamlArraies []decimal.Decimal) int64 {
 	min := deciamlArraies[0]
 	for _, item := range deciamlArraies {
 		if item.LessThan(min) {
 			min = item
 		}
 	}
-	return min
+	return min.IntPart()
 }
 
 func hexToBigInt(hex string) *big.Int {
