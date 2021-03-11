@@ -141,10 +141,12 @@ func GetUniqueId() (string, string) {
 	// 获取虚拟网卡名
 	cmd := exec.Command("ls", "/sys/devices/virtual/net/")
 	out, _ := cmd.CombinedOutput()
-	temps := strings.Split(string(out), "\n")
-	for _, temp := range temps {
-		if temp != "" {
-			virtualNetInterfaces = append(virtualNetInterfaces, temp)
+	if !strings.Contains(string(out), "No such file or directory") {
+		temps := strings.Split(string(out), "\n")
+		for _, temp := range temps {
+			if temp != "" {
+				virtualNetInterfaces = append(virtualNetInterfaces, temp)
+			}
 		}
 	}
 	// 对比全网卡数组与虚拟网卡数组，获取真实存在的物理网卡数组

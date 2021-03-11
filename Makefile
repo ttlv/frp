@@ -1,12 +1,12 @@
 export PATH := $(GOPATH)/bin:$(PATH)
 export GO111MODULE=on
 
-all: fmt build
+all: fmt build-asset build
 
 build: frps frpc
 
 # compile assets into binary file
-file:
+build-asset:
 	rm -rf ./assets/frps/static/*
 	rm -rf ./assets/frpc/static/*
 	cp -rf ./web/frps/dist/* ./assets/frps/static
