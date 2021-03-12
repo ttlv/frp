@@ -207,6 +207,7 @@ func (m *serverMetrics) GetProxiesByType(proxyType string) []*ProxyStats {
 			TodayTrafficOut: proxyStats.TrafficOut.TodayCount(),
 			CurConns:        proxyStats.CurConns.Count(),
 			UniqueID:        proxyStats.UniqueID,
+			MacAddress:      proxyStats.MacAddress,
 			PublicIpAddress: proxyStats.PublicIpAddress,
 		}
 		if !proxyStats.LastStartTime.IsZero() {
