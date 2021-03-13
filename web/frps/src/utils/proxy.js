@@ -10,6 +10,7 @@ class BaseProxy {
         }
         this.conns = proxyStats.cur_conns
         this.unique_id = proxyStats.unique_id
+        this.mac_address = proxyStats.mac_address
         this.traffic_in = proxyStats.today_traffic_in
         this.traffic_out = proxyStats.today_traffic_out
         this.last_start_time = proxyStats.last_start_time

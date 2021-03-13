@@ -482,6 +482,8 @@ func (ctl *Control) manager() {
 						createParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 						// Frpc uniqueID
 						createParams.Add("unique_id", ctl.loginMsg.UniqueID)
+						// Frpc MacAddress
+						createParams.Add("mac_address", ctl.loginMsg.MacAddress)
 						// Frpc 状态(online|offline)
 						createParams.Add("status", consts.Online)
 						result, err := ttlv_utils.Post(ctl.serverCfg.FrpAdapterServerAddress+"/frp_create", nil, createParams, nil)
