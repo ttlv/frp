@@ -498,6 +498,7 @@ func (ctl *Control) manager() {
 						updateParams.Add("port", strings.Replace(remoteAddr, ":", "", -1))
 						updateParams.Add("status", consts.Online)
 						updateParams.Add("unique_id", fmt.Sprintf("%v", ctl.loginMsg.UniqueID))
+						updateParams.Add("mac_address", ctl.loginMsg.MacAddress)
 						result, err := ttlv_utils.Put(ctl.serverCfg.FrpAdapterServerAddress+"/frp_update", nil, updateParams, nil)
 						if err != nil {
 							xl.Info("update frpc info into k8s failed,err is %v", err)
